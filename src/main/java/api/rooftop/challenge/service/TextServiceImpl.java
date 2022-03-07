@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * @author Rodrigo Cruz <rodriikc@gmail.com>
  */
 @Service
-public class TextServiceImpl {
+public class TextServiceImpl implements ITextService {
 
     @Autowired
     private ITextRepository repository;
