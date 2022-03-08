@@ -1,6 +1,5 @@
 package api.rooftop.challenge.repository.specifications;
 
-import api.rooftop.challenge.dto.TextFiltersDTO;
 import api.rooftop.challenge.entity.Text;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TextSpecification {
 
-    public Specification<Text> getByFilters(TextFiltersDTO filters) {
+    public Specification<Text> getByFilters(Integer chars) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filters.getChars() != null) {
+            if (chars != null) {
                 predicates.add(
-                        criteriaBuilder.equal(root.get("chars"), filters.getChars())
+                        criteriaBuilder.equal(root.get("chars"), chars)
                 );
             }
 

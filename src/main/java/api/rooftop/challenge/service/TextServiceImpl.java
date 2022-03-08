@@ -3,7 +3,6 @@ package api.rooftop.challenge.service;
 import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
-import api.rooftop.challenge.dto.TextFiltersDTO;
 import api.rooftop.challenge.entity.Text;
 import api.rooftop.challenge.repository.ITextRepository;
 import api.rooftop.challenge.repository.specifications.TextSpecification;
@@ -80,10 +79,9 @@ public class TextServiceImpl implements ITextService {
     @Override
     @Transactional(readOnly = true)
     public Stream<TextDTO> getByFilters(Integer chars, Integer pageN, Integer rpp) {
-        TextFiltersDTO filters = new TextFiltersDTO(validator.verifyChars(chars));
 
         Pageable pageRequest = PageRequest.of(validator.verifyPage(pageN), validator.verifyRpp(rpp));
-        Page<Text> page = repository.findAll(specifications.getByFilters(filters), pageRequest);
+        Page<Text> page = repository.findAll(specifications.getByFilters(validator.verifyChars(chars)), pageRequest);
 
         return mapper.pageTextToPageDto(page).get();
     }
