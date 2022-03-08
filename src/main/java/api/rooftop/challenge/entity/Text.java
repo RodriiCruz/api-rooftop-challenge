@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 /**
  *
@@ -22,6 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "texts")
+@SQLDelete(sql = "UPDATE texts SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Text {
 
     @Id
@@ -31,5 +35,6 @@ public class Text {
     private Integer chars;
     @ElementCollection
     private Map<String, Integer> result;
+    private boolean deleted;
 
 }

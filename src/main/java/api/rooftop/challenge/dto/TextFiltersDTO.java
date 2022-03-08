@@ -14,6 +14,4 @@ import lombok.NoArgsConstructor;
 public class TextFiltersDTO {
 
     private Integer chars;
-//    private Integer page;
-//    private Integer rpp;
 }

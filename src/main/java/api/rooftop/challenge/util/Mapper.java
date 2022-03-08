@@ -8,6 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,6 +28,7 @@ public class Mapper {
         return Text.builder()
                 .hash(dto.getSHA256())
                 .chars(dto.getChars())
+                .deleted(false)
                 .build();
     }
 
@@ -52,5 +56,14 @@ public class Mapper {
         }
 
         return response;
+    }
+    
+    public Page<TextDTO> pageTextToPageDto(Page<Text> page) {
+        Page<TextDTO> pageInDTO = new PageImpl(
+                this.textToListTextDTO(page.getContent()),
+                PageRequest.of(page.getNumber(), page.getSize()),
+                page.getTotalElements());
+
+        return pageInDTO;
     }
 }

@@ -3,7 +3,6 @@ package api.rooftop.challenge.service;
 import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
-import api.rooftop.challenge.entity.Text;
 import org.springframework.data.domain.Page;
 
 /**
@@ -16,5 +15,5 @@ public interface ITextService {
 
     TextDTO getById(Long id);
 
-    Page<Text> getByFilters(Integer chars, Integer page, Integer rpp);
+    Page<TextDTO> getByFilters(Integer chars, Integer page, Integer rpp);
 }
