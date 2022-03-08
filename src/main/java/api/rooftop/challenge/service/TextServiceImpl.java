@@ -3,14 +3,18 @@ package api.rooftop.challenge.service;
 import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
+import api.rooftop.challenge.dto.TextFiltersDTO;
 import api.rooftop.challenge.entity.Text;
 import api.rooftop.challenge.repository.ITextRepository;
+import api.rooftop.challenge.repository.specifications.TextSpecification;
 import api.rooftop.challenge.util.Mapper;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,8 @@ public class TextServiceImpl implements ITextService {
     private ITextRepository repository;
     @Autowired
     private Mapper mapper;
+    @Autowired
+    private TextSpecification specifications;
 
     @Override
     @Transactional
@@ -62,10 +68,13 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TextDTO> getAll() {
+    public Page<Text> getByFilters(Integer chars, Integer pageN, Integer rpp) {
+        TextFiltersDTO filters = new TextFiltersDTO(chars);
 
-        List<TextDTO> response = mapper.textToListTextDTO(repository.findAll());
-        return response;
+        Pageable pageRequest = PageRequest.of(pageN, rpp);
+        Page<Text> page = repository.findAll(specifications.getByFilters(filters), pageRequest);
+
+        return page;
     }
 
     private Map<String, Integer> getResult(RequestDTO request) {
