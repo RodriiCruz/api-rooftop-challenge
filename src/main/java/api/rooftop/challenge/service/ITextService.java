@@ -3,7 +3,7 @@ package api.rooftop.challenge.service;
 import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
-import org.springframework.data.domain.Page;
+import java.util.stream.Stream;
 
 /**
  *
@@ -15,5 +15,7 @@ public interface ITextService {
 
     TextDTO getById(Long id);
 
-    Page<TextDTO> getByFilters(Integer chars, Integer page, Integer rpp);
+    Stream<TextDTO> getByFilters(Integer chars, Integer page, Integer rpp);
+
+    void delete(Long id);
 }

@@ -8,9 +8,11 @@ import api.rooftop.challenge.entity.Text;
 import api.rooftop.challenge.repository.ITextRepository;
 import api.rooftop.challenge.repository.specifications.TextSpecification;
 import api.rooftop.challenge.util.Mapper;
+import api.rooftop.challenge.util.Validator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,74 +26,85 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class TextServiceImpl implements ITextService {
-    
-    @Autowired
+
     private ITextRepository repository;
-    @Autowired
     private Mapper mapper;
-    @Autowired
     private TextSpecification specifications;
-    
+    private Validator validator;
+
+    @Autowired
+    public TextServiceImpl(ITextRepository repository, Mapper mapper, TextSpecification specifications, Validator validator) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.specifications = specifications;
+        this.validator = validator;
+    }
+
     @Override
     @Transactional
     public ResponseDTO save(RequestDTO requestDTO) throws Exception {
-        requestDTO.setChars(this.verifyChars(requestDTO.getChars()));
-        
+
+        if (requestDTO.getChars() == null || requestDTO.getChars() < 2) {
+            requestDTO.setChars(2);
+        }
+
         Text entitySaved = null;
         ResponseDTO response = null;
-        
+
         if (repository.findByHash(requestDTO.getSHA256()).isEmpty()) {
             Text entity = mapper.requestToText(requestDTO);
             entity.setResult(this.getResult(requestDTO));
-            
+
             entitySaved = repository.save(entity);
         } else {
             entitySaved = repository.findByHash(requestDTO.getSHA256()).get();
         }
-        
+
         response = mapper.textToResponse(entitySaved);
         return response;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public TextDTO getById(Long id) {
         TextDTO response = null;
         Optional<Text> result = repository.findById(id);
-        
+
         if (result.isPresent()) {
             response = mapper.textToTextDTO(result.get());
         }
-        
+
         return response;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
-    public Page<TextDTO> getByFilters(Integer chars, Integer pageN, Integer rpp) {
-        TextFiltersDTO filters = new TextFiltersDTO(chars);
-        
-        Pageable pageRequest = PageRequest.of(pageN, rpp);
+    public Stream<TextDTO> getByFilters(Integer chars, Integer pageN, Integer rpp) {
+        TextFiltersDTO filters = new TextFiltersDTO(validator.verifyChars(chars));
+
+        Pageable pageRequest = PageRequest.of(validator.verifyPage(pageN), validator.verifyRpp(rpp));
         Page<Text> page = repository.findAll(specifications.getByFilters(filters), pageRequest);
-        
-        return mapper.pageTextToPageDto(page);
+
+        return mapper.pageTextToPageDto(page).get();
     }
-    
+
+    @Override
+    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }
-    
+
     private Map<String, Integer> getResult(RequestDTO request) {
-        
+
         String key = "";
         int beginIndex = 0;
-        int endIndex = this.verifyEndIndex(request.getChars(), request.getText());
-        
+        int endIndex = validator.verifyEndIndex(request.getChars(), request.getText());
+
         Map<String, Integer> result = new LinkedHashMap();
-        
+
         while (endIndex <= request.getText().length()) {
             key = request.getText().substring(beginIndex, endIndex);
-            
+
             if (result.containsKey(key)) {
                 int value = result.get(key);
                 value++;
@@ -99,26 +112,11 @@ public class TextServiceImpl implements ITextService {
             } else {
                 result.put(key, 1);
             }
-            
+
             beginIndex++;
             endIndex++;
         }
-        
+
         return result;
     }
-    
-    private Integer verifyChars(Integer chars) {
-        if (chars < 2) {
-            chars = 2;
-        }
-        return chars;
-    }
-    
-    private Integer verifyEndIndex(Integer index, String text) {
-        if (index > text.length()) {
-            index = text.length();
-        }
-        return index;
-    }
-    
 }
