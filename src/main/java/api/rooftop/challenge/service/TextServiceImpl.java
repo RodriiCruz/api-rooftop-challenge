@@ -7,6 +7,7 @@ import api.rooftop.challenge.entity.Text;
 import api.rooftop.challenge.repository.ITextRepository;
 import api.rooftop.challenge.util.Mapper;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,14 @@ public class TextServiceImpl implements ITextService {
             response = mapper.textToTextDTO(result.get());
         }
 
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TextDTO> getAll() {
+
+        List<TextDTO> response = mapper.textToListTextDTO(repository.findAll());
         return response;
     }
 
