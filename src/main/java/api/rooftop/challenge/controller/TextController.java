@@ -3,7 +3,7 @@ package api.rooftop.challenge.controller;
 import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
-import api.rooftop.challenge.service.TextServiceImpl;
+import api.rooftop.challenge.service.ITextService;
 import java.util.HashMap;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TextController {
 
     @Autowired
-    private TextServiceImpl service;
+    private ITextService service;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody RequestDTO request) throws Exception {

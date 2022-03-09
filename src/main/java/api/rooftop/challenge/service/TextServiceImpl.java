@@ -110,7 +110,7 @@ public class TextServiceImpl implements ITextService {
         Map<String, Integer> result = new LinkedHashMap();
 
         while (endIndex <= request.getText().length()) {
-            key = request.getText().substring(beginIndex, endIndex);
+            key = request.getText().toLowerCase().substring(beginIndex, endIndex);
 
             if (result.containsKey(key)) {
                 int value = result.get(key);
