@@ -1,7 +1,5 @@
 package api.rooftop.challenge.entity;
 
-import java.util.Map;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,8 +31,7 @@ public class Text {
     private Long id;
     private String hash;
     private Integer chars;
-    @ElementCollection
-    private Map<String, Integer> result;
+    private String result;
     private boolean deleted;
 
 }

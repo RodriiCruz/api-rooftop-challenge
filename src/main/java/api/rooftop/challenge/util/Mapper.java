@@ -7,7 +7,9 @@ import api.rooftop.challenge.entity.Text;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Mapper {
 
-    public Text requestToText(RequestDTO dto) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public Text requestToTextEntity(RequestDTO dto) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         if (dto.getChars() < 2) {
             dto.setChars(2);
         }
@@ -44,7 +46,7 @@ public class Mapper {
                 .id(entity.getId())
                 .hash(entity.getHash())
                 .chars(entity.getChars())
-                .result(entity.getResult())
+                .result(this.stringToMap(entity.getResult()))
                 .build();
     }
 
@@ -57,7 +59,7 @@ public class Mapper {
 
         return response;
     }
-    
+
     public Page<TextDTO> pageTextToPageDto(Page<Text> page) {
         Page<TextDTO> pageInDTO = new PageImpl(
                 this.textToListTextDTO(page.getContent()),
@@ -65,5 +67,28 @@ public class Mapper {
                 page.getTotalElements());
 
         return pageInDTO;
+    }
+
+    public String mapToString(Map<String, Integer> map) {
+        StringBuilder mapAsString = new StringBuilder();
+        for (String key : map.keySet()) {
+            mapAsString.append(key + "=" + map.get(key) + ",");
+        }
+        mapAsString.delete(mapAsString.length() - 1, mapAsString.length());
+
+        return mapAsString.toString();
+    }
+
+    private Map<String, Integer> stringToMap(String string) {
+
+        String[] keyValuePairs = string.split(",");
+        Map<String, Integer> map = new LinkedHashMap<>();
+
+        for (String pair : keyValuePairs) {
+            String[] entry = pair.split("=");
+            map.put(entry[0], Integer.valueOf(entry[1]));
+        }
+
+        return map;
     }
 }

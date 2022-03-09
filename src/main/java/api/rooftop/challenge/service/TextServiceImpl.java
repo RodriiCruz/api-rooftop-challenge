@@ -52,8 +52,8 @@ public class TextServiceImpl implements ITextService {
         ResponseDTO response = null;
 
         if (repository.findByHash(requestDTO.getSHA256()).isEmpty()) {
-            Text entity = mapper.requestToText(requestDTO);
-            entity.setResult(this.getResult(requestDTO));
+            Text entity = mapper.requestToTextEntity(requestDTO);
+            entity.setResult(mapper.mapToString(this.getResultAsMap(requestDTO)));
 
             entitySaved = repository.save(entity);
         } else {
@@ -101,7 +101,7 @@ public class TextServiceImpl implements ITextService {
         repository.deleteById(id);
     }
 
-    private Map<String, Integer> getResult(RequestDTO request) {
+    private Map<String, Integer> getResultAsMap(RequestDTO request) {
 
         String key = "";
         int beginIndex = 0;
