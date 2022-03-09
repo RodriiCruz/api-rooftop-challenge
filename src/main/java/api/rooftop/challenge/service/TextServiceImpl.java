@@ -4,6 +4,7 @@ import api.rooftop.challenge.dto.RequestDTO;
 import api.rooftop.challenge.dto.ResponseDTO;
 import api.rooftop.challenge.dto.TextDTO;
 import api.rooftop.challenge.entity.Text;
+import api.rooftop.challenge.exceptions.NotFoundException;
 import api.rooftop.challenge.repository.ITextRepository;
 import api.rooftop.challenge.repository.specifications.TextSpecification;
 import api.rooftop.challenge.util.Mapper;
@@ -69,10 +70,11 @@ public class TextServiceImpl implements ITextService {
         TextDTO response = null;
         Optional<Text> result = repository.findById(id);
 
-        if (result.isPresent()) {
-            response = mapper.textToTextDTO(result.get());
+        if (result.isEmpty()) {
+            throw new NotFoundException();
         }
 
+        response = mapper.textToTextDTO(result.get());
         return response;
     }
 
@@ -89,6 +91,13 @@ public class TextServiceImpl implements ITextService {
     @Override
     @Transactional
     public void delete(Long id) {
+
+        Optional<Text> result = repository.findById(id);
+
+        if (result.isEmpty() || result.get().isDeleted() == true) {
+            throw new NotFoundException();
+        }
+
         repository.deleteById(id);
     }
 
