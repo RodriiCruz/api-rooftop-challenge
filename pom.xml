@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>api.rooftop</groupId>
-    <artifactId>challenge</artifactId>
+    <artifactId>rooftop-challenge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>challenge</name>
+    <name>rooftop-challenge</name>
     <description>Rooftop challenge project</description>
     <properties>
         <java.version>11</java.version>
