@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @author Rodrigo Cruz <rodriikc@gmail.com>
  */
 @ControllerAdvice
+@EnableWebMvc
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundException.class, MethodArgumentTypeMismatchException.class})
@@ -29,7 +32,18 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @Override//405
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .error(true)
+                .message("Page not found")
+                .code(404)
+                .build();
+
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(final HttpRequestMethodNotSupportedException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         ErrorDTO errorDTO = ErrorDTO.builder()
                 .error(true)
