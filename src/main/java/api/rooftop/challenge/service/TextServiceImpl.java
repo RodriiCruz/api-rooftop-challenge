@@ -44,9 +44,7 @@ public class TextServiceImpl implements ITextService {
     @Transactional
     public ResponseDTO save(RequestDTO requestDTO) throws Exception {
 
-        if (requestDTO.getChars() == null || requestDTO.getChars() < 2) {
-            requestDTO.setChars(2);
-        }
+        requestDTO.setChars(validator.verifyCharsOfDTO(requestDTO.getChars()));
 
         Text entitySaved = null;
         ResponseDTO response = null;
@@ -105,7 +103,7 @@ public class TextServiceImpl implements ITextService {
 
         String key = "";
         int beginIndex = 0;
-        int endIndex = validator.verifyEndIndex(request.getChars(), request.getText());
+        int endIndex = validator.verifyEndIndex((Integer) request.getChars(), request.getText());
 
         Map<String, Integer> result = new LinkedHashMap();
 

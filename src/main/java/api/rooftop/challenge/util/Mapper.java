@@ -23,13 +23,9 @@ import org.springframework.stereotype.Component;
 public class Mapper {
 
     public Text requestToTextEntity(RequestDTO dto) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        if (dto.getChars() < 2) {
-            dto.setChars(2);
-        }
-
         return Text.builder()
                 .hash(dto.getSHA256())
-                .chars(dto.getChars())
+                .chars((Integer) dto.getChars())
                 .deleted(false)
                 .build();
     }
