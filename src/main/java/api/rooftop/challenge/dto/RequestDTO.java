@@ -14,7 +14,7 @@ import lombok.Data;
 public class RequestDTO {
 
     private String text;
-    private Object chars;
+    private String chars;
 
     public String getSHA256() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 

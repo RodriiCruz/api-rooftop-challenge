@@ -25,7 +25,7 @@ public class Mapper {
     public Text requestToTextEntity(RequestDTO dto) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         return Text.builder()
                 .hash(dto.getSHA256())
-                .chars((Integer) dto.getChars())
+                .chars(Integer.valueOf(dto.getChars()))
                 .deleted(false)
                 .build();
     }

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validator {
 
-    public Object verifyCharsOfDTO(Object chars) {
+    public String verifyCharsOfDTO(String chars) {
 
-        if (chars == null || !(chars instanceof Integer)) {
-            chars = 2;
-        }
-
-        if ((Integer) chars < 2) {
-            chars = 2;
+        try {
+            if (chars == null || Integer.valueOf(chars) < 2) {
+                chars = "2";
+            }
+        } catch (NumberFormatException e) {
+            chars = "2";
         }
 
         return chars;
